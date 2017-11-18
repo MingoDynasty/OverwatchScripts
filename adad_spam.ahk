@@ -1,6 +1,7 @@
 ;=====================================================
 ; ADAD Spam Script
 ;
+; F4: Pharah hover (still in beta).
 ; F5: Predictable AD strafing.
 ; F6: Predictable AD strafing with jump spam.
 ; F7: ADAD spam.
