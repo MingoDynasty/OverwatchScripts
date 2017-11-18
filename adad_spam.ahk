@@ -1,4 +1,4 @@
-;====================================================
+;=====================================================
 ; ADAD Spam Script
 ;
 ; F5: Predictable AD strafing.
@@ -6,13 +6,23 @@
 ; F7: ADAD spam.
 ; F8: ADAD spam with crouch spam.
 ; F9: Reloads the script.
-;====================================================
+;=====================================================
 #SingleInstance ; Only one instance
 #Persistent	; Keep this script running after the auto-execute completes.
 
 main:
 {
 	resetKeys()
+}
+
+;=====================================================
+; Hotkeys
+;=====================================================
+
+F4::
+{
+	pharah()
+	return
 }
 
 F5::
@@ -48,12 +58,50 @@ F9::
 	return
 }
 
+;=====================================================
+; Functions
+;=====================================================
+
 ; When reloading the script in the middle of a strafe, the key is still registered as a key down.
 ; Use this to reset all key states.
 resetKeys()
 {
 	Send {a up}
 	Send {d up}
+	Send {Space up}
+}
+
+pharah()
+{
+	ShowTrayTip("Starting Pharah script.")
+	Loop
+	{
+		Send {Shift down}{Shift up}
+		Sleep 1000
+		hover(12)
+	}
+}
+
+hover(iterations)
+{
+	Loop %iterations%
+	{
+		Send {Space down}
+		Sleep 333  ; The number of milliseconds between keystrokes (or use SetKeyDelay).
+		Send {Space up}
+		Sleep 450
+	}
+}
+
+tooHighHover(iterations)
+{
+	Loop %iterations%
+	{
+		Send {Space down}
+		Sleep 300  ; The number of milliseconds between keystrokes (or use SetKeyDelay).
+		Send {Space up}
+		Sleep 400
+	}
 }
 
 simpleADStrafe()
@@ -73,8 +121,8 @@ simpleADStrafeWithJump()
 	strafe_length := 50
 	Loop
 	{
-		holdKeyWithJump("a", strafe_length)
-		holdKeyWithJump("d", strafe_length)
+		holdKeyWithSpace("a", strafe_length)
+		holdKeyWithSpace("d", strafe_length)
 	}
 }
 
@@ -156,7 +204,7 @@ holdKeyWithCrouch(key, iterations)
 	Send {%key% up}  ; Release the key.
 }
 
-holdKeyWithJump(key, iterations)
+holdKeyWithSpace(key, iterations)
 {
 	Loop %iterations%
 	{
