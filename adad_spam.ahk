@@ -1,16 +1,29 @@
+;====================================================
+; ADAD Spam Script
+;
+; F5: Predictable AD strafing.
+; F6: Predictable AD strafing with jump spam.
+; F7: ADAD spam.
+; F8: ADAD spam with crouch spam.
+; F9: Reloads the script.
+;====================================================
 #SingleInstance ; Only one instance
 #Persistent	; Keep this script running after the auto-execute completes.
-; SetTitleMatchMode RegEx ; change to regex since the ahk_class can seemingly change
-; SetKeyDelay 200 ; try to prevent skips from sending keys too fast
 
-; period := 1000 * 5  ; every 5 seconds
-period := 1200
-; hold_down_time := 5000
-toggle := false
+main:
+{
+	resetKeys()
+}
+
+F5::
+{
+	simpleADStrafe()
+	return
+}
 
 F6::
 {
-	simpleADStrafe()
+	simpleADStrafeWithJump()
 	return
 }
 
@@ -35,6 +48,14 @@ F9::
 	return
 }
 
+; When reloading the script in the middle of a strafe, the key is still registered as a key down.
+; Use this to reset all key states.
+resetKeys()
+{
+	Send {a up}
+	Send {d up}
+}
+
 simpleADStrafe()
 {
 	ShowTrayTip("Starting AD Strafe script.")
@@ -43,6 +64,17 @@ simpleADStrafe()
 	{
 		holdKey("a", strafe_length)
 		holdKey("d", strafe_length)
+	}
+}
+
+simpleADStrafeWithJump()
+{
+	ShowTrayTip("Starting AD Strafe jump script.")
+	strafe_length := 50
+	Loop
+	{
+		holdKeyWithJump("a", strafe_length)
+		holdKeyWithJump("d", strafe_length)
 	}
 }
 
@@ -67,13 +99,13 @@ randomADStrafeV2()
 	
 		if direction = 1
 		{
-			myKey := "a"
+			key := "a"
 		}
 		else if direction = 2
 		{
-			myKey := "d"
+			key := "d"
 		}
-		holdKey(myKey, strafe_length)
+		holdKey(key, strafe_length)
 	}
 }
 
@@ -87,33 +119,31 @@ randomADStrafeWithCrouch()
 	
 		if direction = 1
 		{
-			myKey := "a"
+			key := "a"
 		}
 		else if direction = 2
 		{
-			myKey := "d"
+			key := "d"
 		}
-		
-		; holdKey(myKey, strafe_length)
-	
+			
 		Random, bCrouch, 0, 2
 		if bCrouch <= 0 
 		{
-			holdKeyWithCrouch(myKey, strafe_length)
+			holdKeyWithCrouch(key, strafe_length)
 		} else {
-			holdKey(myKey, strafe_length)
+			holdKey(key, strafe_length)
 		}
 	}
 }
 
-holdKey(myKey, iterations)
+holdKey(key, iterations)
 {
 	Loop %iterations%
 	{
-		Send {%myKey% down}  ; Auto-repeat consists of consecutive down-events (with no up-events).
+		Send {%key% down}  ; Auto-repeat consists of consecutive down-events (with no up-events).
 		Sleep 30  ; The number of milliseconds between keystrokes (or use SetKeyDelay).
 	}
-	Send {%myKey% up}  ; Release the key.
+	Send {%key% up}  ; Release the key.
 }
 
 holdKeyWithCrouch(key, iterations)
@@ -121,6 +151,17 @@ holdKeyWithCrouch(key, iterations)
 	Loop %iterations%
 	{
 		Send ^{%key% down}  ; Auto-repeat consists of consecutive down-events (with no up-events).
+		Sleep 30  ; The number of milliseconds between keystrokes (or use SetKeyDelay).
+	}
+	Send {%key% up}  ; Release the key.
+}
+
+holdKeyWithJump(key, iterations)
+{
+	Loop %iterations%
+	{
+		Send {%key% down}  ; Auto-repeat consists of consecutive down-events (with no up-events).
+		Send {Space}
 		Sleep 30  ; The number of milliseconds between keystrokes (or use SetKeyDelay).
 	}
 	Send {%key% up}  ; Release the key.
